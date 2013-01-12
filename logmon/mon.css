@@ -1,0 +1,188 @@
+/* (C) Kirils Solovjovs */
+body {
+ margin: 0;
+ padding: 1em;
+ color: black;
+ background: #fee;
+ font: 13px Candara, Verdana, serif;
+ -moz-column-width: 320px;
+ -moz-column-gap: 10px;
+ -webkit-column-width: 320px;
+ -webkit-column-gap: 10px;
+ columns: auto 320px; 
+ column-gap: 10px;
+ height: 95%;
+}
+
+
+
+#statusicon {
+ margin: 0;
+ padding: 0;
+ width: 40px;
+ height: 40px;
+ background:url('data:image/gif;base64,R0lGODlhFwAVAOf/AAMFAQsEAhUFARoEAAsKACEHAhgKAx0JBBINDA0PDAoRBBIPBRgQACQNBDAKAQcWAxsVBxgWDykTAhcXFRIaDyAYAxoaAhMcBAsfAiYXFU0QBUkVBDAcGTwaExIpAh8mAkEcBCciGDgfBSMjHysjE18VBSgmBC8kBQowBBoqFHITAzkjFkgjACQrISgrFw04ARwzCikwCjMsIi0tKj4tAJgTAB83AmYiCC8zA4wbABVBAFktDW8pAyo/AK0ZADo7Ak8zFTc7Fzg4NT44LVIzJ0Y5EoMpACFGFlE2NE84J1E8A2U2CEY8KTNDKy9GGzxFAkBCFBBSBT1CMr0hAENFBDVKBKsoACNQBecYAYQ2AHo5A9AgAN4cAERII0ZFQE1KAGw+HqUxAHNBBGVFI2hKA11LHA9lA/0fAElVBCRgC1tNKl5LNYhFAlFPSmZOF1VRLZ9AAL04AFlVCkJZLE9VLjtgClxRQThgGss3AFlXG0pdGlBXSlNbGpVLAPcuACBuAHZUBjFpA0BmBINSCFNhA1pfA2RcBFdcLPEzAFdiFBR6AINaAF5eWb9LAGVeTeNDAC55ADt1A3JmBEpyBl1qImdoHVtuEK5XAGZsBvBEAJJiAF9yBGJpXb5ZAGxoYQuPACuIAHVsWoJyAGVyWFOBAHZ3AHluVUmFAHB6AGd1UOFZAGd+AHJyW6JtAHV0U8hlAG53atRkAHh1bxShAHSLAJWCAFmUAEWaAIKIALZ5ANhvADihAG2TAAKzAHqEdIaDfXuJZn2UAI6FcYiIacSEAI+UAC+yAD+uAGekAKiSABe/AIWfAHuiAI+eAIySgpWQg5KRjGCuAJieAFO0ALScAAPUAL6fAKKahp2blF69AJatACfOAEnEAJqfgqCsAIK1AKWrAJqhipGyAJuilXO/AF/GAB7eAEzRAI3EAA7qAK6qp6O/ALa6ALy5ALK/AKDFAAD1AC/pALHIAAH+ALm4s7O7sbnQAMjSALTYAMfGwczlAMLoANvkANf4APL6AP///yH+JEtpcmlscyBTb2xvdmpvdnMsIDIwMTA7IDVzZWMgdGltZW91dAAh+QQJ9AH/ACwAAAAAFwAVAAAI/gD/CRxIsKDBgwPr1XPmy9e4eggNqoN1JIqZi2aizPGVL2I9WUfSKAL1qeQnRYqiNIF2UB2nI39KzprVq9fMkmaayCpYzxOMmDSVbatWbZsym5/SpPg1cBy0FlE+zVJWzVy6q+nMbUN6pAU9gfS8pFA01So8ePPmnU1XzaZSRgKhjUDxiWo6tGnzwku3VVGKGflgMZrwou7dvIjVmlPmdwK0NkIS0N12OHFaeIsVPUjAaMYIABgM47WMuZcZBQCETJgA4MGfXuZGI95bbVYU1CP+IQCgQIfoxGfN9VLkAUACgTN2PzBT9uzlrMo+6UB9XGCCBKDNfOq1zZz3akc/O902TtDLddA6yM4ydtPMC+rVB0bGrgADCh1RorxA8QBAgOsHCWEcAATyhlqB/0X0D3YFNkigggU5GFFAACH5BAn0Af8ALAAAAAAXABUAAAj+AP8JHEiwoMGDA+mpe/brFzZ6CA2q80REQwkVKkpsQCIrX0R1sohczEGypAoNSKAdVMeog4ocNXzIlFmDZIkOsgpOdJlD5pafP6f4qFmCw6+B6qBx0NBzyhYuWBAhwsJli9AcHWZA/EfPCwcVPpxi8XOm7Bk/WKzWKJGBkUBoEzrkEEvWbFm0W3yoyDAjnyxGExzU2DLWrl0/XKbsnQCtjRAEggkbPpxYxYEEjGaMAFAgB+G6kxHrFQDg8QQAAsByAW04rQ8NAQCM+JcAQIANg1eHTpzDQYAEAmfUHlAit5+6aHnDBgBcYIIEAQoU9/GTS9W8OTSQbi7Qy/MAAzY1qIg5M0cJ38y5CxTyPbqDDRo0OHAgIEAABOoHCmEOwLb9//0hgEBEtPVn4IEBEFjQgQBEFBAAOw==') top right no-repeat;
+ position: absolute;
+ right: 5px;
+ top: 5px;
+ opacity: 0.7;
+}
+
+* {
+  border-radius: 4px;
+ -moz-border-radius: 4px;
+ -webkit-border-radius: 4px;
+/*
+ border: 1px solid red;
+ background: rgba(255,0,0,0.2); 
+*/
+}
+
+a {
+ text-decoration: none; color: inherit;
+}
+
+ul {
+ padding: 0px;
+
+}
+
+li { 
+ list-style-type: none;
+ word-wrap: break-word;
+}
+
+
+ul.domlist > li {
+ border: 1px black solid;
+ margin: 3px; /* half the size needed, because inline-block */
+ padding: 2px;
+ background: white;
+ width: 320px;
+ display: inline-block;
+ break-after: column;
+ -moz-column-break-after: column;
+}
+
+
+ul.iplist > li {
+ break-inside: avoid-column;
+ -moz-column-break-inside: avoid-column;
+ padding-left: 10px;
+}
+
+ul.filelist > li {
+ margin: 0px;
+ padding: 0px;
+ font: 9px Arial, sans-serif;
+ padding-left: 10px;
+
+}
+
+ul.filelist {
+ line-height: 0px;
+}
+
+.time { color: darkblue;} 
+
+.domain{
+ font-weight: bold;
+ text-transform: uppercase;
+}
+
+.ip{
+ color: blue;
+ border: 1px solid blue;
+}
+
+.instances {
+ color: blue;
+}
+
+.status {
+
+ font-weight: bold;
+}
+
+.method{
+ font-style: italic;
+}
+
+.file {
+ text-decoration: underline;
+}
+
+.size {
+ color: green;
+}
+
+.referer {
+ background: #ffffd0;
+}
+
+.ua {
+ background: #edffff;
+}
+
+.repeat {
+ color: red;
+}
+
+.sg1 {
+ color: cyan; 
+}
+
+.sg2 {
+ background: lime;
+}
+.sg3 {
+ background: yellow;
+}
+.sg4 {
+ background: red;
+}
+.sg5 {
+ background: purple;
+ color: white;
+}
+
+.s100 {
+ background: orange;
+}
+
+.s200 {
+ background: white;
+}
+
+.s404 {
+ background: lightgrey;
+}
+
+.s403 {
+ background: pink;
+}
+
+.oldversion {
+ color: blue;
+}
+
+.nonstandart {
+ color: brown;
+ text-decoration: overline underline;
+}
+
+.subrq .time {
+ display: none;
+}
+
+
+.subrq  {
+ display: inline;
+ padding: 0px !important;
+ font-size: 7px !important;
+}
+
+.subrq span {
+ letter-spacing: -0.1em;
+}
+
