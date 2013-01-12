@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# webaccess - per file Apache access_log display
+#
+# Copyright Kirils Solovjovs, 2013
+#
+# Usage: webaccess <filename>
+# Example: webaccess /var/www/some/folder/or/file.html
+#
+# Bugs: Does not distinguish between vhosts, e.g.
+#       looking for /var/www/host1/folder/file.html
+#	will also find access to /var/www/host2/folder/file.html
+#
+WEBCONFROOT=/etc/httpd
+
+usage(){
+	echo
+	echo "Usage: $0 <filename>"
+	echo Shows who and when accessed a specific file on your webserver
+	echo
+	exit 1
+}
+
+fullpath(){
+	[ -z "$(which realpath)" ] || realpath -s $1 && exit 0
+	echo $1
+	exit 0
+}
+
+check(){
+	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/ #fallback
+	webroots=$(grep -R "^\s*DocumentRoot" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*DocumentRoot //;s/^"\(.*\)"$/\1/'|sort|uniq)
+	maxrootl=0
+	maxroot=""
+	for x in $webroots; do
+		[ -z "${1/$x*/}" -a $maxrootl -lt ${#x} ] && maxrootl=${#x} && maxroot=$x
+	done
+	[ -z "$maxroot" ] && echo File $1 does not reside in a web-accessible directory && exit 4
+	maxroot="${maxroot%/}"
+	file="${1#$maxroot}"
+	file="${file%/}"
+	file2="$(echo $file|sed -E 's#/index.[^./]+$##')"
+	[ "$file2" == "$file" ] && file2="$file/" || file2="$file2/"
+	file3="$file?"
+	#logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/'|sort|uniq)
+	#logrotate support
+	logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/;s/$/*/'|sort|uniq)
+	[ -z "$(which zgrep)" ] && GREP=grep || GREP=zgrep
+	#TODO: This could be optimised into one zgrep call with zgrep -E (but $file should be escaped for regexp chars)
+	($GREP --binary-files=without-match \ $file\   $logfiles 2> /dev/null ;
+	$GREP --binary-files=without-match \ $file2\   $logfiles 2> /dev/null ;
+	$GREP --binary-files=without-match \ $file3\   $logfiles 2> /dev/null ;) \
+	| cut -d : -f 2-| cut -d " " -f 1-5 | awk '{print $4,$5,$1}' | sort -t / -k3,3.4 -k2Mr -k1.1 -k3.6
+	exit 0
+}
+
+[ -z "$1" ] && usage && exit 1
+file=$(fullpath "$1")
+[ -f "$file" ] && check "$file" || echo File $file not found && exit 3
+exit $?
