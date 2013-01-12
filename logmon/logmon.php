@@ -19,6 +19,8 @@ define('CONF_LOGFILE',''); // set FULL PATH to logfile here
 define('CONF_TIMEOUT',5); //seconds
 define('CONF_TIMEZONE','Europe/Riga');
 define('CONF_WINDOWSIZE',60); //seconds
+
+//NB! update #statusicon background in mon.css if you increase this
 define('CONF_REFRESH',1); //minimum sleep between refresh, seconds
 
 
@@ -126,7 +128,7 @@ class clients{
   foreach($this->clientlist as $n=>$v){
    $grouping[$v[$groupby]][]=&$this->clientlist[$n];
   }
-  $status_codes = array(
+  $status_codes = array( //RFC2616
 		 100=>'100 Continue',
 		 101=>'101 Switching Protocols',
 
@@ -202,7 +204,7 @@ class clients{
      .(ip2long($ip['ip'])?gethostbyaddr($ip['ip']):$ip['ip'])."</a></span>"
      .($ip['referer']?" <span class='referer'><a href='".$ip['referer']."'>"
      .$ip['referer']."</a></span>":'').($ip['ua']?" <span class='ua'><a href='"
-     ."http://www.useragentstring.com/index.php?uas=".urlencode($ip['ua'])
+     ."http://www.useragentstring.com/index.php?getText=all&amp;uas=".urlencode($ip['ua'])
 //     ."http://my-addr.com/user_agent_string_analysis-and-user_agent_details/user"
 //     ."_agent_lookup-user_agent_checker_tool.php?user_agent=".urlencode($ip['ua'])
      ."'>".$ip['ua']."</a></span>":'')."<ul class='filelist'>");
