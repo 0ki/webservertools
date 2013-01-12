@@ -71,8 +71,9 @@ while(!feof($handle)) {
 pclose($handle);
 echo("Content-Type: text/plain\nContent-Length: 0--$boundary--");
 
-/////////////////
 
+
+// CLASS STARTS HERE
 
 class clients{
  private $clientlist;
@@ -91,8 +92,8 @@ class clients{
     break;
    }
   }
-  if(!$g) { //new shit
-  //  $e['r']=1;
+  if(!$g) { //new IP/domain pair
+//    $e['r']=1;
     $e['requests'][]=$e;
 //    array_unshift($this->clientlist,$e); //add to top
     $this->clientlist[]=$e;
@@ -100,7 +101,7 @@ class clients{
   }
  }
 
- function clear($seconds=60){ //Y2038 bug here
+ function clear($seconds=60){ //BUG: Y2038 bug here
   foreach($this->clientlist as $m=>$v)
    if(time()-$v['date']>=$seconds){
     $mdate=2147483648;
@@ -119,11 +120,11 @@ class clients{
    }
  }
 
- function showme($by='domain'){
+ function showme($groupby='domain'){
   $this->clear(CONF_WINDOWSIZE);
   $grouping=array();
   foreach($this->clientlist as $n=>$v){
-   $grouping[$v[$by]][]=&$this->clientlist[$n];
+   $grouping[$v[$groupby]][]=&$this->clientlist[$n];
   }
   $status_codes = array(
 		 100=>'100 Continue',
@@ -181,8 +182,8 @@ class clients{
    
    $repstr='';
    $repcnt=sizeof($va);
- //  if($repcnt>1)
- //   $repstr.="($repcnt) ";
+//   if($repcnt>1)
+//    $repstr.="($repcnt) ";
    for(;$repcnt>100;$repcnt-=100)
     $repstr.='⁂';
    $repstr.=' ';
