@@ -1,19 +1,25 @@
 <?php
 /*
-(C) Kirils Solovjovs, 2010
-NO REDISTRIBUTION ALLOWED.
-
+* (C) Kirils Solovjovs, 2010, 2013
+* 
+* logmon.php - The Web Host Monitor
+* 
+* This scripts shows realtime info on who is accessing what on your Apache server
+* and does so without the use of javascript, but rather by using a funky multipart hack.
+*
+* Needs a Linux server to run, but can (and may) be customised to work with non-Apache servers.
+* 
 */
+
 error_reporting(E_STRICT);
 // CONFIG STARTS HERE
 
-// set your config file format!
-define('CONF_LOGFILE','/var/log/httpd/access_log'); // set FULL PATH to logfile here
+// set your CustomLog file format to "%h %l %u %t %v:%p \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\""
+define('CONF_LOGFILE',''); // set FULL PATH to logfile here
 define('CONF_TIMEOUT',5); //seconds
 define('CONF_TIMEZONE','Europe/Riga');
 define('CONF_WINDOWSIZE',60); //seconds
 define('CONF_REFRESH',1); //minimum sleep between refresh, seconds
-
 
 
 // CONFIG ENDS HERE
@@ -22,7 +28,7 @@ set_time_limit(0);
 ini_set('zlib.output_compression','1');
 ini_set('zlib.output_compression_level','9');
 
-$ff=preg_match('/^Mozilla\/[5-9][0-9\.]*\s.*\sFirefox\/([0-9\.]+)$/',$HTTP_USER_AGENT,$v);
+$ff=preg_match('/^Mozilla\/[5-9][0-9\.]*\s.*\sFirefox\/([0-9\.]+)$/',$GLOBALS['HTTP_USER_AGENT'],$v);
 $bv='';
 foreach (explode('.',$v[1]) as $sv)
  $bv.=str_pad($sv,3,'0',STR_PAD_LEFT);
@@ -33,7 +39,7 @@ if(!$ff || ($bv<3005000))
  die('Sorry, only Firefox 3.5+ is currently supported.');
 
 if(CONF_LOGFILE==='')
- die('Please configure settings by opening Server Host Monitor with your favorite text editor.');
+ die('Please configure settings by opening logmon.php with your favorite text editor.');
 elseif(!is_readable(CONF_LOGFILE)){
  $user=posix_getpwuid(posix_geteuid());
  $group=posix_getgrgid(posix_getegid());
@@ -192,7 +198,8 @@ class clients{
    echo("<ul class='iplist'>");
    foreach($va as $ip){
     echo("<li><span class='ip'><a href='http://net.02.lv/whois?param=".$ip['ip']."'>"
-     .(ip2long($ip['ip'])?gethostbyaddr($ip['ip']):$ip['ip'])."</a></span>".($ip['referer']?" <span class='referer'><a href='".$ip['referer']."'>"
+     .(ip2long($ip['ip'])?gethostbyaddr($ip['ip']):$ip['ip'])."</a></span>"
+     .($ip['referer']?" <span class='referer'><a href='".$ip['referer']."'>"
      .$ip['referer']."</a></span>":'').($ip['ua']?" <span class='ua'><a href='"
      ."http://www.useragentstring.com/index.php?uas=".urlencode($ip['ua'])
 //     ."http://my-addr.com/user_agent_string_analysis-and-user_agent_details/user"
@@ -249,12 +256,13 @@ function uniq_c($ar){
   $mar[]=$prear[$k].$compar[$k].$k.(($v>1)?" <span class='repeat'>($v)</span>":'').$postar[$k];
  return $mar;
 }
+
 function boundary_start(){
   echo("Content-Type: text/html\n\n");
   echo('<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lv" lang="lv">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />');
-echo("<meta http-equiv='refresh' content='".CONF_TIMEOUT."' /><title>Web Host Monitor - ".date("l, j. F Y H:i:s")."</title>");
+echo("<meta http-equiv='refresh' content='".CONF_TIMEOUT."' /><title>The Web Host Monitor - ".date("l, j. F Y H:i:s")."</title>");
 ?>
  <style type="text/css">
  @import "/mon.css";
