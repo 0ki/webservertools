@@ -11,7 +11,6 @@
 #       looking for /var/www/host1/folder/file.html
 #	will also find access to /var/www/host2/folder/file.html
 #
-WEBCONFROOT=/etc/httpd
 
 usage(){
 	echo
@@ -22,19 +21,29 @@ usage(){
 }
 
 fullpath(){
-	[ -z "$(which realpath)" ] || realpath -s $1 && exit 0
+	[ "${1:0:1}" == "/" ] && echo $1 && exit 0 # path alredy absolute
+	[ ! -z "$(which realpath)" ] && realpath -s $1 && exit 0
+	[ ! -z "$(which readlink)" ] && echo Using readlink to resolve path. If this fails, \
+	try specifying absolute path. >&2 && readlink -m $1 && exit 0
 	echo $1
 	exit 0
 }
 
 check(){
-	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/ #fallback
-	webroots=$(grep -R "^\s*DocumentRoot" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*DocumentRoot //;s/^"\(.*\)"$/\1/'|sort|uniq)
+	echo -n "Looking for config..." >&2
+	WEBCONFROOT=/etc/httpd
+	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/apache2/
+	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/apache/
+	[ ! -d "$WEBCONFROOT" ] && echo -n Apache config directory not found, searching /etc/... >&2 && WEBCONFROOT=/etc/
+	webroots=$(grep -R "^\s*DocumentRoot" $WEBCONFROOT 2>/dev/null|cut -d : -f 2-|sed 's/\s*DocumentRoot //;s/^"\(.*\)"$/\1/'|sort|uniq)
 	maxrootl=0
 	maxroot=""
+	count=0
 	for x in $webroots; do
+		count=$(($count+1))
 		[ -z "${1/$x*/}" -a $maxrootl -lt ${#x} ] && maxrootl=${#x} && maxroot=$x
 	done
+	echo found $count Apache web roots >&2
 	[ -z "$maxroot" ] && echo File $1 does not reside in a web-accessible directory && exit 4
 	maxroot="${maxroot%/}"
 	file="${1#$maxroot}"
@@ -42,19 +51,21 @@ check(){
 	file2="$(echo $file|sed -E 's#/index.[^./]+$##')"
 	[ "$file2" == "$file" ] && file2="$file/" || file2="$file2/"
 	file3="$file?"
-	#logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/'|sort|uniq)
 	#logrotate support
 	logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/;s/$/*/'|sort|uniq)
+	echo Please wait, grepping logs. This can take a long time... >&2
 	[ -z "$(which zgrep)" ] && GREP=grep || GREP=zgrep
 	#TODO: This could be optimised into one zgrep call with zgrep -E (but $file should be escaped for regexp chars)
 	($GREP --binary-files=without-match \ $file\   $logfiles 2> /dev/null ;
 	$GREP --binary-files=without-match \ $file2\   $logfiles 2> /dev/null ;
 	$GREP --binary-files=without-match \ $file3\   $logfiles 2> /dev/null ;) \
-	| cut -d : -f 2-| cut -d " " -f 1-5 | awk '{print $4,$5,$1}' | sort -t / -k3,3.4 -k2Mr -k1.1 -k3.6
+	| cut -d : -f 2-| awk '{ for (i=1; i<=NF; i++) {f = $i;if ($i ~ /^".*[^"]$/) {do \
+	{ f = f OFS $++i }while ($i !~ /"$/)} ++j; if (j==1)N1=f;if(j==4)N2=f; if(j==5)N3=f;} print N2,N3"\t"N1"\t"f; j=0 }' \
+	| LC_TIME="us_US" sort -t / -k3,3.4 -k2M -k1.1 -k3.6
 	exit 0
 }
 
 [ -z "$1" ] && usage && exit 1
 file=$(fullpath "$1")
-[ -f "$file" ] && check "$file" || echo File $file not found && exit 3
+[ -f "$file" -o -d "$file" ] && check "$file" || echo File $file not found && exit 3
 exit $?
