@@ -35,7 +35,8 @@ check(){
 	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/apache2/
 	[ ! -d "$WEBCONFROOT" ] && WEBCONFROOT=/etc/apache/
 	[ ! -d "$WEBCONFROOT" ] && echo -n Apache config directory not found, searching /etc/... >&2 && WEBCONFROOT=/etc/
-	webroots=$(grep -R "^\s*DocumentRoot" $WEBCONFROOT 2>/dev/null|cut -d : -f 2-|sed 's/\s*DocumentRoot //;s/^"\(.*\)"$/\1/'|sort|uniq)
+	webroots=$(grep -R "^\s*DocumentRoot" $WEBCONFROOT 2>/dev/null|cut -d : -f 2- \
+  | sed 's/\s*DocumentRoot //;s/^"\(.*\)"$/\1/'|sort|uniq)
 	maxrootl=0
 	maxroot=""
 	count=0
@@ -52,7 +53,8 @@ check(){
 	[ "$file2" == "$file" ] && file2="$file/" || file2="$file2/"
 	file3="$file?"
 	#logrotate support
-	logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2-|sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/;s/$/*/'|sort|uniq)
+	logfiles=$(grep -R "^\s*CustomLog" $WEBCONFROOT|cut -d : -f 2- \
+  | sed 's/\s*CustomLog //;s/ .*$//;s/^"\(.*\)"$/\1/;s/$/*/'|sort|uniq)
 	echo Please wait, grepping logs. This can take a long time... >&2
 	[ -z "$(which zgrep)" ] && GREP=grep || GREP=zgrep
 	#TODO: This could be optimised into one zgrep call with zgrep -E (but $file should be escaped for regexp chars)

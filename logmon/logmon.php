@@ -226,7 +226,8 @@ class clients{
       .$r['domain'].':'.$r['port'].$r['file'].'">'.$r['file'].'</a>':$r['file'])
       .'</span>'.($r['size']?' <span class="size">'.(($r['size']>=1048576)
       ?(round($r['size']/1048576,2).'Mi'):(($r['size']>=1024)?(round($r['size']/1024,2)
-      .'Ki'):$r['size'])).'B</span>':''), '<span class="time">'.date('H:i:s',$r['date']).'</span> ',($subrq?'<li class="subrq">':'<li>'),'</li>');
+      .'Ki'):$r['size'])).'B</span>':''), '<span class="time">'.date('H:i:s',$r['date'])
+      .'</span> ',($subrq?'<li class="subrq">':'<li>'),'</li>');
       $lastrd=$r['date'];
      }
 
@@ -262,13 +263,15 @@ function uniq_c($ar){
 
 function boundary_start(){
   echo("Content-Type: text/html\n\n");
-  echo('<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">-->
+  echo('<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" '
+  .'"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lv" lang="lv">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />');
-echo("<meta http-equiv='refresh' content='".CONF_TIMEOUT."' /><title>The Web Host Monitor - ".date("l, j. F Y H:i:s")."</title>");
+  echo("<meta http-equiv='refresh' content='".CONF_TIMEOUT."' /><title>The Web Host Monitor - "
+  .date("l, j. F Y H:i:s")."</title>");
 ?>
  <style type="text/css">
- @import "/mon.css";
+  @import "/mon.css";
  </style>
 </head><body>
 <?
