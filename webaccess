@@ -22,9 +22,10 @@ usage(){
 
 fullpath(){
 	[ "${1:0:1}" == "/" ] && echo $1 && exit 0 # path alredy absolute
+	[ "${1:0:1}" != "." ] && echo $(pwd)/$1 && exit 0
+  echo Relative path found. If detection fails, try specifying absolute path. >&2
 	[ ! -z "$(which realpath)" ] && realpath -s $1 && exit 0
-	[ ! -z "$(which readlink)" ] && echo Using readlink to resolve path. If this fails, \
-	try specifying absolute path. >&2 && readlink -m $1 && exit 0
+	[ ! -z "$(which readlink)" ] && readlink -m $1 && exit 0
 	echo $1
 	exit 0
 }
@@ -62,7 +63,7 @@ check(){
 	$GREP --binary-files=without-match \ $file2\   $logfiles 2> /dev/null ;
 	$GREP --binary-files=without-match \ $file3\   $logfiles 2> /dev/null ;) \
 	| cut -d : -f 2-| awk '{ for (i=1; i<=NF; i++) {f = $i;if ($i ~ /^".*[^"]$/) {do \
-	{ f = f OFS $++i }while ($i !~ /"$/)} ++j; if (j==1)N1=f;if(j==4)N2=f; if(j==5)N3=f;} print N2,N3"\t"N1"\t"f; j=0 }' \
+	{ f = f OFS $++i }while ($i !~ /"$/)} ++j; if (j==1)N1=f;if(j==4)N2=f; if(j==5)N3=f;} print N2,N3"\t"N1"\t"f; j=0 }'\
 	| LC_TIME="us_US" sort -t / -k3,3.4 -k2M -k1.1 -k3.6
 	exit 0
 }
