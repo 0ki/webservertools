@@ -1,0 +1,11 @@
+#!/bin/bash
+[ -z "$1" ] && echo "$0" zonefile && exit 10
+[ ! -f "$1" ] && echo can''t open zonefile "$1" && exit 1
+[ -L "$1" ] && echo file "$1" is a symlink - ignore && exit 1
+found=$(cat -- "$1" |grep  "\bSOA\b" -A50 -m1|grep \) -B50 -m1 |cut -d \; -f 1|grep -nE "[0-9]{10}")
+line=$(($(echo $found | cut -d : -f 1) +$(cat -- "$1" |grep  "\bSOA\b" -nm1|cut -d : -f 1)-1))
+current=$(echo $found | cut -d : -f 2|sed 's/[^0-9]//g')
+new=$(date +%Y%m%d)00
+[ $new -le $current ] && new=$(( $current + 1))
+sed "${line}s/$current/$new/" -i "$1"
+
