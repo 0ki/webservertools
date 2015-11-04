@@ -13,10 +13,10 @@ filename="$(date +%Y-%m-%d)_$$"
 filename="$filename.ttyrec"
 [ -e "$dir/$filename" ] && echo "Sorry, will not overwrite an existing file." && exit 1
 echo "Recording to $filename..."
-ttyrec -e "env PS1='\[\033[01;32m\]user@host\[\033[01;34m\] \w \$\[\033[00m\] ' /bin/bash --norc -i" -- "$dir/$filename"
+ttyrec -e "/bin/bash --rcfile <(echo \" PS1='\[\033[01;32m\]user@host\[\033[01;34m\] \w \$\[\033[00m\] '\") -i" -- "$dir/$filename"
 size="$(($(cat -- "$dir/$filename" | wc -c ) / 1000))"
 echo -e "Recording saved to $filename ($size KB).\nAuto-replay in 3 seconds: ^C to cancel"
 sleep 3
 reset
-ttyplay -- "$dir/$filename"
+ttyplay -s 3 -- "$dir/$filename"
 echo "ttyarec exiting..."
