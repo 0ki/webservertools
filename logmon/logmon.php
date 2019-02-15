@@ -222,8 +222,9 @@ class clients{
       .$r['status']):('http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.'
       .$r['status'][0].'.'.(substr($r['status'],1)+1)))):'').'">'.$r['status']
       .'</a></span> <span class="method">'.$r['method'].'</span> <span class="file">'
-      .((strtoupper($r['method'])=='GET')?'<a href="'.$r['protocol'].'://'
-      .$r['domain'].':'.$r['port'].$r['file'].'">'.$r['file'].'</a>':$r['file'])
+      .(((strtoupper($r['method'])=='GET')&&(strtoupper($r['protocol'])=='HTTP'))?'<a href="'
+      .(($r['port']==443)?'https':$r['protocol']).'://'.$r['domain'].':'
+      .$r['port'].$r['file'].'">'.$r['file'].'</a>':$r['file'])
       .'</span>'.($r['size']?' <span class="size">'.(($r['size']>=1048576)
       ?(round($r['size']/1048576,2).'Mi'):(($r['size']>=1024)?(round($r['size']/1024,2)
       .'Ki'):$r['size'])).'B</span>':''), '<span class="time">'.date('H:i:s',$r['date'])
