@@ -50,7 +50,7 @@ elseif(!is_readable(CONF_LOGFILE)){
 }
 $boundary=uniqid();
 header('Content-Type: multipart/x-mixed-replace;boundary='.$boundary);
-echo("\n--$boundary");
+echo("\n--$boundary\n");
 
 date_default_timezone_set(CONF_TIMEZONE);
 $handle = popen("tail -f -- ".escapeshellarg(CONF_LOGFILE)." 2>&1", 'r');
@@ -280,7 +280,7 @@ function boundary_start(){
 function boundary_end(){
   global $boundary;
   echo("</body></html>");
-  echo("\n--$boundary");
+  echo("\n--$boundary\n");
   ob_flush();
   flush();
 }
