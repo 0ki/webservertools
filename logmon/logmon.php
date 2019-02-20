@@ -71,7 +71,7 @@ while(!feof($handle)) {
  sleep(CONF_REFRESH);
 }
 pclose($handle);
-echo("Content-Type: text/plain\nContent-Length: 0--$boundary--");
+echo("Content-Type: text/plain\nContent-Length: 0\n--$boundary--");
 
 
 
